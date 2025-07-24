@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from typing import Dict, List
-from urllib.request import urlopen
+from urllib.request import urlopen, Request
 
 import jsonschema
 
@@ -257,3 +257,161 @@ class JSONSchemaToRedshift(JSONSchemaToDatabase):
     def __init__(self, *args, **kwargs):
         kwargs["database_flavor"] = "redshift"
         super(JSONSchemaToRedshift, self).__init__(*args, **kwargs)
+
+
+class JSONSchemaToDuckDB(JSONSchemaToDatabase):
+    """Shorthand for JSONSchemaToDatabase(..., database_flavor='duckdb')
+    
+    DuckDB-specific implementation that handles DuckDB's SQL dialect differences:
+    - Uses DuckDB-specific data types (BOOLEAN, DOUBLE, VARCHAR, etc.)
+    - Handles auto-increment primary keys differently (INTEGER PRIMARY KEY)
+    - Uses DuckDB's schema and table creation syntax
+    - Manages foreign key constraints in DuckDB format
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs["database_flavor"] = "duckdb"
+        super(JSONSchemaToDuckDB, self).__init__(*args, **kwargs)
+
+    def create_tables(self, conn, auto_commit: bool = True, drop_schema: bool = False, drop_cascade: bool = False):
+        """Creates all tables in DuckDB.
+        
+        DuckDB-specific implementation that:
+        - Creates schemas using DuckDB syntax
+        - Creates sequences for auto-increment primary keys
+        - Handles DuckDB-specific data types
+        - Uses proper DuckDB table creation syntax
+        
+        Args:
+            conn: DuckDB connection object
+            auto_commit (bool): Whether to auto-commit transactions
+            drop_schema (bool): Whether to drop schema before creating tables
+            drop_cascade (bool): Whether to use CASCADE when dropping
+        """
+        if drop_schema and self.db_schema_name:
+            with conn.cursor() as cursor:
+                self.logger.info(f"Dropping schema {self.db_schema_name}!")
+                self._execute(cursor, f"DROP SCHEMA IF EXISTS {self.db_schema_name} CASCADE;")
+
+        if self.db_schema_name:
+            with conn.cursor() as cursor:
+                self.logger.info(f"Creating schema {self.db_schema_name}")
+                self._execute(cursor, f"CREATE SCHEMA IF NOT EXISTS {self.db_schema_name};")
+
+        # Create sequences for auto-increment primary keys first
+        for table_ref, table in self.table_definitions.items():
+            if table.primary_key and (table.primary_key.jsonschema_type in ["integer", "id"]):
+                # Clean table name for sequence naming - replace all non-alphanumeric with underscore
+                clean_table_name = table.name.replace('"', '').replace('.', '_').replace('-', '_')
+                # Remove any other special characters that might cause issues
+                import re
+                clean_table_name = re.sub(r'[^a-zA-Z0-9_]', '_', clean_table_name)
+                sequence_name = f"{clean_table_name}_seq"
+                with conn.cursor() as cursor:
+                    self.logger.info(f"Creating sequence {sequence_name} for table {table.name}")
+                    # Drop sequence if it exists (for schema recreation)
+                    if drop_schema:
+                        self._execute(cursor, f"DROP SEQUENCE IF EXISTS {sequence_name};")
+                    self._execute(cursor, f"CREATE SEQUENCE IF NOT EXISTS {sequence_name} START 1;")
+
+        for table_ref, table in self.table_definitions.items():
+            with conn.cursor() as cursor:
+                self.logger.info(f"Trying to create table {table.name}")
+                if drop_schema:
+                    self.logger.info(f"Dropping table {table.name}!!")
+                    self._execute(
+                        cursor,
+                        f'DROP TABLE IF EXISTS {table.name} {"CASCADE" if drop_cascade else ""};',
+                    )
+                
+                # Handle DuckDB-specific column definitions
+                all_cols = []
+                for col in table.columns:
+                    col_def = f'"{col.name}" {col.data_type}'
+                    
+                    # Add DEFAULT NEXTVAL for auto-increment primary keys
+                    if col.is_pk and col.jsonschema_type in ["integer", "id"]:
+                        # Use same cleaning logic as sequence creation
+                        clean_table_name = table.name.replace('"', '').replace('.', '_').replace('-', '_')
+                        import re
+                        clean_table_name = re.sub(r'[^a-zA-Z0-9_]', '_', clean_table_name)
+                        sequence_name = f"{clean_table_name}_seq"
+                        col_def += f" PRIMARY KEY DEFAULT NEXTVAL('{sequence_name}')"
+                    elif col.is_pk:
+                        col_def += " PRIMARY KEY"
+                        
+                    all_cols.append(col_def)
+                
+                unique_cols = [f'"{col.name}"' for col in table.columns if col.is_unique]
+                
+                # Build CREATE TABLE statement for DuckDB
+                create_parts = [f"CREATE TABLE {table.name} ("]
+                create_parts.append(f"{', '.join(all_cols)}")
+                
+                if unique_cols:
+                    create_parts.append(f", UNIQUE ({', '.join(unique_cols)})")
+                
+                create_parts.append(");")
+                create_q = " ".join(create_parts)
+                
+                self._execute(cursor, create_q)
+                
+                # DuckDB uses COMMENT ON syntax similar to PostgreSQL
+                if table.comment:
+                    self.logger.debug(f"Set the following comment on table {table.name}: {table.comment}")
+                    self._execute(cursor, f"COMMENT ON TABLE {table.name} IS '{table.comment}'")
+                
+                for col in table.columns:
+                    if col.comment:
+                        self.logger.debug(f"Set the following comment on column {col.name}: {col.comment}")
+                        self._execute(
+                            cursor,
+                            f'COMMENT ON COLUMN {table.name}."{col.name}" IS \'{col.comment}\'',
+                        )
+                self.logger.info("Table created!")
+
+        if auto_commit:
+            conn.commit()
+
+    def create_links(self, conn, auto_commit: bool = True):
+        """Adds foreign keys between tables in DuckDB format.
+        
+        Note: DuckDB currently has limited support for ALTER TABLE ADD CONSTRAINT
+        for foreign keys, so this method logs a warning and skips FK creation.
+
+        Args:
+            conn: DuckDB connection object
+            auto_commit (bool): Whether to auto-commit transactions
+        """
+        self.logger.warning("DuckDB has limited support for ALTER TABLE ADD CONSTRAINT for foreign keys. Skipping foreign key creation.")
+        # for table_ref, table in self.table_definitions.items():
+        #     for col in table.columns:
+        #         if col.is_fk():
+        #             # DuckDB foreign key syntax - currently not supported in ALTER TABLE
+        #             table_name_parts = col.table_ref.name.split('"')
+        #             constraint_name = table_name_parts[-2] if len(table_name_parts) > 1 else col.table_ref.name
+        #             fk_q = (
+        #                 f"ALTER TABLE {table.name} "
+        #                 f"ADD CONSTRAINT fk_{constraint_name} "
+        #                 f"FOREIGN KEY (\"{col.name}\") "
+        #                 f"REFERENCES {col.table_ref.name} (\"{col.table_ref.primary_key.name}\");"
+        #             )
+        #             with conn.cursor() as cursor:
+        #                 self._execute(cursor, fk_q)
+        #             if auto_commit:
+        #                 conn.commit()
+
+    def analyze(self, conn):
+        """Runs analyze on each table for DuckDB.
+        
+        DuckDB has different syntax for analyzing tables.
+        
+        Args:
+            conn: DuckDB connection object
+        """
+        self.logger.info("Analyzing tables...")
+        with conn.cursor() as cursor:
+            for table_ref, table in self.table_definitions.items():
+                self.logger.info(f"Launch analyze for {table.name}")
+                # DuckDB uses ANALYZE instead of ANALYZE table_name
+                self._execute(cursor, f"ANALYZE {table.name}")

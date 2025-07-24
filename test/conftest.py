@@ -1,8 +1,11 @@
 import json
+import tempfile
+import os
 
 import pytest
 from sqlalchemy import create_engine
 from testcontainers.postgres import PostgresContainer
+import duckdb
 
 
 @pytest.fixture
@@ -50,3 +53,14 @@ def schema_time():
     with open("test/schema_time.json") as f:
         schema = json.load(f)
     return schema
+
+
+@pytest.fixture
+def duckdb_db():
+    """Create an in-memory DuckDB database for testing"""
+    conn = duckdb.connect(":memory:")
+    yield {
+        "connection": conn,
+        "engine": None,  # DuckDB doesn't use SQLAlchemy engine in our tests
+    }
+    conn.close()
