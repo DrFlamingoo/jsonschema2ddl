@@ -183,8 +183,7 @@ def test_duckdb_foreign_keys(duckdb_db):
     )
 
     translator.create_tables(connection, auto_commit=True)
-    # Skip create_links for now since DuckDB doesn't support ALTER TABLE ADD CONSTRAINT for FK
-    # translator.create_links(connection)
+    translator.create_links(connection)  # Now works with FK constraints during table creation
     
     cursor = connection.cursor()
     

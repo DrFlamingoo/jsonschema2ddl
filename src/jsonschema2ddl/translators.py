@@ -274,13 +274,14 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
         super(JSONSchemaToDuckDB, self).__init__(*args, **kwargs)
 
     def create_tables(self, conn, auto_commit: bool = True, drop_schema: bool = False, drop_cascade: bool = False):
-        """Creates all tables in DuckDB.
+        """Creates all tables in DuckDB with FK constraints during table creation.
         
         DuckDB-specific implementation that:
         - Creates schemas using DuckDB syntax
         - Creates sequences for auto-increment primary keys
         - Handles DuckDB-specific data types
-        - Uses proper DuckDB table creation syntax
+        - Uses proper DuckDB table creation syntax with FK constraints
+        - Orders table creation to respect FK dependencies
         
         Args:
             conn: DuckDB connection object
@@ -314,7 +315,11 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
                         self._execute(cursor, f"DROP SEQUENCE IF EXISTS {sequence_name};")
                     self._execute(cursor, f"CREATE SEQUENCE IF NOT EXISTS {sequence_name} START 1;")
 
-        for table_ref, table in self.table_definitions.items():
+        # Get table creation order respecting FK dependencies
+        creation_order = self._get_table_creation_order()
+
+        for table_ref in creation_order:
+            table = self.table_definitions[table_ref]
             with conn.cursor() as cursor:
                 self.logger.info(f"Trying to create table {table.name}")
                 if drop_schema:
@@ -326,6 +331,8 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
                 
                 # Handle DuckDB-specific column definitions
                 all_cols = []
+                foreign_keys = []
+                
                 for col in table.columns:
                     col_def = f'"{col.name}" {col.data_type}'
                     
@@ -341,6 +348,11 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
                         col_def += " PRIMARY KEY"
                         
                     all_cols.append(col_def)
+                    
+                    # Collect FK constraints for DuckDB
+                    if col.is_fk():
+                        fk_constraint = self._build_fk_constraint(col)
+                        foreign_keys.append(fk_constraint)
                 
                 unique_cols = [f'"{col.name}"' for col in table.columns if col.is_unique]
                 
@@ -350,6 +362,10 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
                 
                 if unique_cols:
                     create_parts.append(f", UNIQUE ({', '.join(unique_cols)})")
+                
+                # Add FK constraints to CREATE TABLE
+                for fk_constraint in foreign_keys:
+                    create_parts.append(f", {fk_constraint}")
                 
                 create_parts.append(");")
                 create_q = " ".join(create_parts)
@@ -374,32 +390,57 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
             conn.commit()
 
     def create_links(self, conn, auto_commit: bool = True):
-        """Adds foreign keys between tables in DuckDB format.
+        """Foreign keys are created during table creation in DuckDB.
         
-        Note: DuckDB currently has limited support for ALTER TABLE ADD CONSTRAINT
-        for foreign keys, so this method logs a warning and skips FK creation.
+        DuckDB foreign key constraints must be defined during table creation,
+        not via ALTER TABLE ADD CONSTRAINT. This method is now a no-op for DuckDB.
 
         Args:
             conn: DuckDB connection object
             auto_commit (bool): Whether to auto-commit transactions
         """
-        self.logger.warning("DuckDB has limited support for ALTER TABLE ADD CONSTRAINT for foreign keys. Skipping foreign key creation.")
-        # for table_ref, table in self.table_definitions.items():
-        #     for col in table.columns:
-        #         if col.is_fk():
-        #             # DuckDB foreign key syntax - currently not supported in ALTER TABLE
-        #             table_name_parts = col.table_ref.name.split('"')
-        #             constraint_name = table_name_parts[-2] if len(table_name_parts) > 1 else col.table_ref.name
-        #             fk_q = (
-        #                 f"ALTER TABLE {table.name} "
-        #                 f"ADD CONSTRAINT fk_{constraint_name} "
-        #                 f"FOREIGN KEY (\"{col.name}\") "
-        #                 f"REFERENCES {col.table_ref.name} (\"{col.table_ref.primary_key.name}\");"
-        #             )
-        #             with conn.cursor() as cursor:
-        #                 self._execute(cursor, fk_q)
-        #             if auto_commit:
-        #                 conn.commit()
+        self.logger.info("DuckDB foreign keys were created during table creation. Skipping create_links.")
+        # FK constraints are already created in create_tables() method
+        
+    def _get_table_creation_order(self):
+        """Get table creation order respecting FK dependencies.
+        
+        Uses a simple heuristic: tables without FK dependencies first,
+        then tables with FK dependencies.
+        
+        Returns:
+            List of table references in creation order
+        """
+        tables_without_fk = []
+        tables_with_fk = []
+        
+        for table_ref, table in self.table_definitions.items():
+            has_fk = any(col.is_fk() for col in table.columns)
+            if has_fk:
+                tables_with_fk.append(table_ref)
+            else:
+                tables_without_fk.append(table_ref)
+        
+        # Simple heuristic: non-FK tables first, then FK tables
+        # This works for most common cases where parent tables don't have FKs
+        creation_order = tables_without_fk + tables_with_fk
+        
+        self.logger.debug(f"Table creation order: {creation_order}")
+        return creation_order
+    
+    def _build_fk_constraint(self, col):
+        """Build FK constraint string for DuckDB CREATE TABLE.
+        
+        Args:
+            col: FKColumn object with FK information
+            
+        Returns:
+            String: FK constraint in DuckDB format
+        """
+        # Format: FOREIGN KEY (column_name) REFERENCES parent_table(parent_column)
+        constraint = f'FOREIGN KEY ("{col.name}") REFERENCES {col.table_ref.name} ("{col.table_ref.primary_key.name}")'
+        self.logger.debug(f"Built FK constraint: {constraint}")
+        return constraint
 
     def analyze(self, conn):
         """Runs analyze on each table for DuckDB.

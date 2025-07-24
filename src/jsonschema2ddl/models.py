@@ -184,6 +184,7 @@ class Table:
                 name="id",
                 database_flavor=self.database_flavor,
                 jsonschema_type="id",
+                jsonschema_fields={"pk": True},  # Mark auto-generated id as primary key
             )
             self.columns.append(col)
             self.primary_key = col
@@ -220,9 +221,9 @@ class FKColumn(Column):
         if "varchar" in data_type_ref.lower():
             return data_type_ref
         else:
-            # For DuckDB, sequences produce INTEGER values
-            if self.database_flavor == "duckdb" and self.table_ref.primary_key.jsonschema_type in ["integer", "id"]:
-                return "INTEGER"
+            # For DuckDB, FK should match the primary key data type exactly
+            if self.database_flavor == "duckdb":
+                return data_type_ref
             return FK_TYPES.get(data_type_ref, "bigint")
 
     @staticmethod
