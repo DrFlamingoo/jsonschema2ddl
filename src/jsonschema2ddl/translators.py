@@ -41,7 +41,6 @@ class JSONSchemaToDatabase:
         root_table_name: str = "root",
         log_level: str = os.getenv("LOG_LEVEL", "DEBUG"),
     ):
-
         self.logger.setLevel(log_level)
         Table.logger = self.logger.getChild("Table")
         Column.logger = self.logger.getChild("Column")
@@ -70,7 +69,7 @@ class JSONSchemaToDatabase:
             jsonschema.ValidationError: Schema is invalid
         """
         metaschema_uri = self.schema.get("$schema", "https://json-schema.org/draft-07/schema")
-        r = Request(metaschema_uri, headers={'User-Agent': 'Mozilla/5.0'})
+        r = Request(metaschema_uri, headers={"User-Agent": "Mozilla/5.0"})
 
         meta_schema = json.loads(urlopen(r).read())
         jsonschema.validate(instance=self.schema, schema=meta_schema)
@@ -261,7 +260,7 @@ class JSONSchemaToRedshift(JSONSchemaToDatabase):
 
 class JSONSchemaToDuckDB(JSONSchemaToDatabase):
     """Shorthand for JSONSchemaToDatabase(..., database_flavor='duckdb')
-    
+
     DuckDB-specific implementation that handles DuckDB's SQL dialect differences:
     - Uses DuckDB-specific data types (BOOLEAN, DOUBLE, VARCHAR, etc.)
     - Handles auto-increment primary keys differently (INTEGER PRIMARY KEY)
@@ -275,14 +274,14 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
 
     def create_tables(self, conn, auto_commit: bool = True, drop_schema: bool = False, drop_cascade: bool = False):
         """Creates all tables in DuckDB with FK constraints during table creation.
-        
+
         DuckDB-specific implementation that:
         - Creates schemas using DuckDB syntax
         - Creates sequences for auto-increment primary keys
         - Handles DuckDB-specific data types
         - Uses proper DuckDB table creation syntax with FK constraints
         - Orders table creation to respect FK dependencies
-        
+
         Args:
             conn: DuckDB connection object
             auto_commit (bool): Whether to auto-commit transactions
@@ -303,10 +302,11 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
         for table_ref, table in self.table_definitions.items():
             if table.primary_key and (table.primary_key.jsonschema_type in ["integer", "id"]):
                 # Clean table name for sequence naming - replace all non-alphanumeric with underscore
-                clean_table_name = table.name.replace('"', '').replace('.', '_').replace('-', '_')
+                clean_table_name = table.name.replace('"', "").replace(".", "_").replace("-", "_")
                 # Remove any other special characters that might cause issues
                 import re
-                clean_table_name = re.sub(r'[^a-zA-Z0-9_]', '_', clean_table_name)
+
+                clean_table_name = re.sub(r"[^a-zA-Z0-9_]", "_", clean_table_name)
                 sequence_name = f"{clean_table_name}_seq"
                 with conn.cursor() as cursor:
                     self.logger.info(f"Creating sequence {sequence_name} for table {table.name}")
@@ -328,61 +328,62 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
                         cursor,
                         f'DROP TABLE IF EXISTS {table.name} {"CASCADE" if drop_cascade else ""};',
                     )
-                
+
                 # Handle DuckDB-specific column definitions
                 all_cols = []
                 foreign_keys = []
-                
+
                 for col in table.columns:
                     col_def = f'"{col.name}" {col.data_type}'
-                    
+
                     # Add DEFAULT NEXTVAL for auto-increment primary keys
                     if col.is_pk and col.jsonschema_type in ["integer", "id"]:
                         # Use same cleaning logic as sequence creation
-                        clean_table_name = table.name.replace('"', '').replace('.', '_').replace('-', '_')
+                        clean_table_name = table.name.replace('"', "").replace(".", "_").replace("-", "_")
                         import re
-                        clean_table_name = re.sub(r'[^a-zA-Z0-9_]', '_', clean_table_name)
+
+                        clean_table_name = re.sub(r"[^a-zA-Z0-9_]", "_", clean_table_name)
                         sequence_name = f"{clean_table_name}_seq"
                         col_def += f" PRIMARY KEY DEFAULT NEXTVAL('{sequence_name}')"
                     elif col.is_pk:
                         col_def += " PRIMARY KEY"
-                        
+
                     all_cols.append(col_def)
-                    
+
                     # Collect FK constraints for DuckDB
                     if col.is_fk():
                         fk_constraint = self._build_fk_constraint(col)
                         foreign_keys.append(fk_constraint)
-                
+
                 unique_cols = [f'"{col.name}"' for col in table.columns if col.is_unique]
-                
+
                 # Build CREATE TABLE statement for DuckDB
                 create_parts = [f"CREATE TABLE {table.name} ("]
                 create_parts.append(f"{', '.join(all_cols)}")
-                
+
                 if unique_cols:
                     create_parts.append(f", UNIQUE ({', '.join(unique_cols)})")
-                
+
                 # Add FK constraints to CREATE TABLE
                 for fk_constraint in foreign_keys:
                     create_parts.append(f", {fk_constraint}")
-                
+
                 create_parts.append(");")
                 create_q = " ".join(create_parts)
-                
+
                 self._execute(cursor, create_q)
-                
+
                 # DuckDB uses COMMENT ON syntax similar to PostgreSQL
                 if table.comment:
                     self.logger.debug(f"Set the following comment on table {table.name}: {table.comment}")
                     self._execute(cursor, f"COMMENT ON TABLE {table.name} IS '{table.comment}'")
-                
+
                 for col in table.columns:
                     if col.comment:
                         self.logger.debug(f"Set the following comment on column {col.name}: {col.comment}")
                         self._execute(
                             cursor,
-                            f'COMMENT ON COLUMN {table.name}."{col.name}" IS \'{col.comment}\'',
+                            f"COMMENT ON COLUMN {table.name}.\"{col.name}\" IS '{col.comment}'",
                         )
                 self.logger.info("Table created!")
 
@@ -391,7 +392,7 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
 
     def create_links(self, conn, auto_commit: bool = True):
         """Foreign keys are created during table creation in DuckDB.
-        
+
         DuckDB foreign key constraints must be defined during table creation,
         not via ALTER TABLE ADD CONSTRAINT. This method is now a no-op for DuckDB.
 
@@ -401,39 +402,39 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
         """
         self.logger.info("DuckDB foreign keys were created during table creation. Skipping create_links.")
         # FK constraints are already created in create_tables() method
-        
+
     def _get_table_creation_order(self):
         """Get table creation order respecting FK dependencies.
-        
+
         Uses a simple heuristic: tables without FK dependencies first,
         then tables with FK dependencies.
-        
+
         Returns:
             List of table references in creation order
         """
         tables_without_fk = []
         tables_with_fk = []
-        
+
         for table_ref, table in self.table_definitions.items():
             has_fk = any(col.is_fk() for col in table.columns)
             if has_fk:
                 tables_with_fk.append(table_ref)
             else:
                 tables_without_fk.append(table_ref)
-        
+
         # Simple heuristic: non-FK tables first, then FK tables
         # This works for most common cases where parent tables don't have FKs
         creation_order = tables_without_fk + tables_with_fk
-        
+
         self.logger.debug(f"Table creation order: {creation_order}")
         return creation_order
-    
+
     def _build_fk_constraint(self, col):
         """Build FK constraint string for DuckDB CREATE TABLE.
-        
+
         Args:
             col: FKColumn object with FK information
-            
+
         Returns:
             String: FK constraint in DuckDB format
         """
@@ -444,9 +445,9 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
 
     def analyze(self, conn):
         """Runs analyze on each table for DuckDB.
-        
+
         DuckDB has different syntax for analyzing tables.
-        
+
         Args:
             conn: DuckDB connection object
         """

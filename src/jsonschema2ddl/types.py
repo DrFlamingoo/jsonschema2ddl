@@ -29,7 +29,7 @@ DUCKDB_TYPES = {
     "integer": "BIGINT",
     "date-time": "TIMESTAMP",
     "timestamp": "TIMESTAMP",
-    "timestampz": "TIMESTAMPTZ", 
+    "timestampz": "TIMESTAMPTZ",
     "date": "DATE",
     "link": "INTEGER",
     "array": "JSON",
