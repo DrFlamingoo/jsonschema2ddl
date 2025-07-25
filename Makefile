@@ -53,4 +53,4 @@ clean:  ## Remove build artifacts
 
 
 .PHONY: precommit
-precommit:  setup clean lint test docs ## Actions befor a commit
+precommit:  install clean lint test docs ## Actions befor a commit

@@ -1,6 +1,5 @@
 import json
-import tempfile
-import os
+
 
 import pytest
 from sqlalchemy import create_engine

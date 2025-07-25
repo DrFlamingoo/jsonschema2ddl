@@ -1,9 +1,5 @@
 """Test cases for DuckDB support in jsonschema2ddl"""
 
-import datetime
-import pytest
-import duckdb
-
 from jsonschema2ddl import JSONSchemaToDuckDB
 
 
@@ -60,8 +56,8 @@ def test_duckdb_schema_with_definitions(duckdb_db, schema):
     # Verify tables were created
     result = cursor.execute(
         """
-        SELECT table_name 
-        FROM information_schema.tables 
+        SELECT table_name
+        FROM information_schema.tables
         WHERE table_schema = 'schm'
         ORDER BY table_name
     """
@@ -102,8 +98,8 @@ def test_duckdb_type_mappings(duckdb_db):
     cursor = connection.cursor()
     result = cursor.execute(
         """
-        SELECT column_name, data_type 
-        FROM information_schema.columns 
+        SELECT column_name, data_type
+        FROM information_schema.columns
         WHERE table_schema = 'test_types' AND table_name = 'type_test'
         ORDER BY column_name
     """
@@ -197,8 +193,8 @@ def test_duckdb_foreign_keys(duckdb_db):
     # Verify the relationship
     result = cursor.execute(
         """
-        SELECT i.title, c.name 
-        FROM "test_fk"."items" i 
+        SELECT i.title, c.name
+        FROM "test_fk"."items" i
         JOIN "test_fk"."category" c ON i.category_ref = c.id
     """
     ).fetchall()
@@ -257,8 +253,8 @@ def test_duckdb_table_comments(duckdb_db):
     # Verify table was created successfully
     result = cursor.execute(
         """
-        SELECT COUNT(*) 
-        FROM information_schema.tables 
+        SELECT COUNT(*)
+        FROM information_schema.tables
         WHERE table_schema = 'comment_test' AND table_name = 'commented_table'
     """
     ).fetchone()

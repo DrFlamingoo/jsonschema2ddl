@@ -1,7 +1,6 @@
 """Enhanced FK constraint test for DuckDB"""
 
 import pytest
-import duckdb
 from jsonschema2ddl import JSONSchemaToDuckDB
 
 
@@ -44,8 +43,8 @@ def test_duckdb_foreign_key_constraint_enforcement(duckdb_db):
     # Verify the valid relationship works
     result = cursor.execute(
         """
-        SELECT i.title, c.name 
-        FROM "fk_enforcement"."items" i 
+        SELECT i.title, c.name
+        FROM "fk_enforcement"."items" i
         JOIN "fk_enforcement"."category" c ON i.category_ref = c.id
     """
     ).fetchall()
@@ -112,7 +111,7 @@ def test_duckdb_complex_fk_relationships(duckdb_db):
     result = cursor.execute(
         """
         SELECT i.title, u.name as owner, c.name as category
-        FROM "complex_fk"."items" i 
+        FROM "complex_fk"."items" i
         JOIN "complex_fk"."user" u ON i.owner_ref = u.id
         JOIN "complex_fk"."category" c ON i.category_ref = c.id
     """

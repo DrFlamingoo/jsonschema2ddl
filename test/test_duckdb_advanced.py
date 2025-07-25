@@ -1,7 +1,5 @@
 """Additional comprehensive tests for DuckDB auto-increment edge cases"""
 
-import pytest
-import duckdb
 from jsonschema2ddl import JSONSchemaToDuckDB
 
 
