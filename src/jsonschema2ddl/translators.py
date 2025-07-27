@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import re
 from typing import Dict, List
 from urllib.request import urlopen, Request
 
@@ -304,7 +305,6 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
                 # Clean table name for sequence naming - replace all non-alphanumeric with underscore
                 clean_table_name = table.name.replace('"', "").replace(".", "_").replace("-", "_")
                 # Remove any other special characters that might cause issues
-                import re
 
                 clean_table_name = re.sub(r"[^a-zA-Z0-9_]", "_", clean_table_name)
                 sequence_name = f"{clean_table_name}_seq"
@@ -340,7 +340,6 @@ class JSONSchemaToDuckDB(JSONSchemaToDatabase):
                     if col.is_pk and col.jsonschema_type in ["integer", "id"]:
                         # Use same cleaning logic as sequence creation
                         clean_table_name = table.name.replace('"', "").replace(".", "_").replace("-", "_")
-                        import re
 
                         clean_table_name = re.sub(r"[^a-zA-Z0-9_]", "_", clean_table_name)
                         sequence_name = f"{clean_table_name}_seq"
