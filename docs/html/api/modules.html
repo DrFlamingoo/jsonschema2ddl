@@ -1,20 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>jsonschema2ddl &mdash; jsonschema2ddl  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -27,12 +28,16 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> jsonschema2ddl
-            <img src="../_static/clarity.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            jsonschema2ddl
+              <img src="../_static/clarity.svg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,8 +65,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>jsonschema2ddl</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">jsonschema2ddl</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/modules.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -72,16 +77,122 @@
            <div itemprop="articleBody">
              
   <section id="jsonschema2ddl">
-<h1>jsonschema2ddl<a class="headerlink" href="#jsonschema2ddl" title="Permalink to this headline"></a></h1>
+<h1>jsonschema2ddl<a class="headerlink" href="#jsonschema2ddl" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="jsonschema2ddl.html">jsonschema2ddl package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="jsonschema2ddl.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jsonschema2ddl.html#module-jsonschema2ddl.models">jsonschema2ddl.models module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jsonschema2ddl.html#module-jsonschema2ddl.translators">jsonschema2ddl.translators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jsonschema2ddl.html#module-jsonschema2ddl.models">jsonschema2ddl.models module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column"><code class="docutils literal notranslate"><span class="pre">Column</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column.name"><code class="docutils literal notranslate"><span class="pre">Column.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column.database_flavor"><code class="docutils literal notranslate"><span class="pre">Column.database_flavor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column.comment"><code class="docutils literal notranslate"><span class="pre">Column.comment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column.constraints"><code class="docutils literal notranslate"><span class="pre">Column.constraints</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column.jsonschema_fields"><code class="docutils literal notranslate"><span class="pre">Column.jsonschema_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id0"><code class="docutils literal notranslate"><span class="pre">Column.comment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id1"><code class="docutils literal notranslate"><span class="pre">Column.constraints</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column.data_type"><code class="docutils literal notranslate"><span class="pre">Column.data_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id2"><code class="docutils literal notranslate"><span class="pre">Column.database_flavor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column.is_fk"><code class="docutils literal notranslate"><span class="pre">Column.is_fk()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column.is_index"><code class="docutils literal notranslate"><span class="pre">Column.is_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column.is_pk"><code class="docutils literal notranslate"><span class="pre">Column.is_pk</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column.is_unique"><code class="docutils literal notranslate"><span class="pre">Column.is_unique</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id3"><code class="docutils literal notranslate"><span class="pre">Column.jsonschema_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column.jsonschema_type"><code class="docutils literal notranslate"><span class="pre">Column.jsonschema_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column.logger"><code class="docutils literal notranslate"><span class="pre">Column.logger</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Column.max_lenght"><code class="docutils literal notranslate"><span class="pre">Column.max_lenght</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id4"><code class="docutils literal notranslate"><span class="pre">Column.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.FKColumn"><code class="docutils literal notranslate"><span class="pre">FKColumn</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.FKColumn.table_ref"><code class="docutils literal notranslate"><span class="pre">FKColumn.table_ref</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.FKColumn.data_type"><code class="docutils literal notranslate"><span class="pre">FKColumn.data_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.FKColumn.is_fk"><code class="docutils literal notranslate"><span class="pre">FKColumn.is_fk()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id5"><code class="docutils literal notranslate"><span class="pre">FKColumn.table_ref</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Table"><code class="docutils literal notranslate"><span class="pre">Table</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Table.ref"><code class="docutils literal notranslate"><span class="pre">Table.ref</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Table.name"><code class="docutils literal notranslate"><span class="pre">Table.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Table.database_flavor"><code class="docutils literal notranslate"><span class="pre">Table.database_flavor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Table.columns"><code class="docutils literal notranslate"><span class="pre">Table.columns</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Table.primary_key"><code class="docutils literal notranslate"><span class="pre">Table.primary_key</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Table.comment"><code class="docutils literal notranslate"><span class="pre">Table.comment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Table.indexes"><code class="docutils literal notranslate"><span class="pre">Table.indexes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Table.unique_columns"><code class="docutils literal notranslate"><span class="pre">Table.unique_columns</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Table.jsonschema_fields"><code class="docutils literal notranslate"><span class="pre">Table.jsonschema_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id6"><code class="docutils literal notranslate"><span class="pre">Table.columns</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id7"><code class="docutils literal notranslate"><span class="pre">Table.comment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id8"><code class="docutils literal notranslate"><span class="pre">Table.database_flavor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Table.expand_columns"><code class="docutils literal notranslate"><span class="pre">Table.expand_columns()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id9"><code class="docutils literal notranslate"><span class="pre">Table.indexes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id10"><code class="docutils literal notranslate"><span class="pre">Table.jsonschema_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.models.Table.logger"><code class="docutils literal notranslate"><span class="pre">Table.logger</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id11"><code class="docutils literal notranslate"><span class="pre">Table.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id12"><code class="docutils literal notranslate"><span class="pre">Table.primary_key</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id13"><code class="docutils literal notranslate"><span class="pre">Table.ref</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#id14"><code class="docutils literal notranslate"><span class="pre">Table.unique_columns</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jsonschema2ddl.html#module-jsonschema2ddl.translators">jsonschema2ddl.translators module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDatabase"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDatabase.schema"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.schema</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDatabase.database_flavor"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.database_flavor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDatabase.db_schema_name"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.db_schema_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDatabase.root_table_name"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.root_table_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDatabase.abbreviations"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.abbreviations</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDatabase.extra_columns"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.extra_columns</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDatabase.log_level"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.log_level</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDatabase.analyze"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.analyze()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDatabase.create_links"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.create_links()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDatabase.create_tables"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.create_tables()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDatabase.logger"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.logger</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDuckDB"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDuckDB</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDuckDB.analyze"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDuckDB.analyze()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDuckDB.create_links"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDuckDB.create_links()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToDuckDB.create_tables"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDuckDB.create_tables()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToPostgres"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToPostgres</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.translators.JSONSchemaToRedshift"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToRedshift</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="jsonschema2ddl.html#module-jsonschema2ddl.types">jsonschema2ddl.types module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jsonschema2ddl.html#module-jsonschema2ddl.utils">jsonschema2ddl.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jsonschema2ddl.html#module-jsonschema2ddl">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jsonschema2ddl.html#module-jsonschema2ddl.utils">jsonschema2ddl.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.utils.db_column_name"><code class="docutils literal notranslate"><span class="pre">db_column_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.utils.db_table_name"><code class="docutils literal notranslate"><span class="pre">db_table_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.utils.get_one_schema"><code class="docutils literal notranslate"><span class="pre">get_one_schema()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jsonschema2ddl.html#module-jsonschema2ddl">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDatabase"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDatabase.schema"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.schema</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDatabase.database_flavor"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.database_flavor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDatabase.db_schema_name"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.db_schema_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDatabase.root_table_name"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.root_table_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDatabase.abbreviations"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.abbreviations</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDatabase.extra_columns"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.extra_columns</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDatabase.log_level"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.log_level</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDatabase.analyze"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.analyze()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDatabase.create_links"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.create_links()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDatabase.create_tables"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.create_tables()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDatabase.logger"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDatabase.logger</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDuckDB"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDuckDB</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDuckDB.analyze"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDuckDB.analyze()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDuckDB.create_links"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDuckDB.create_links()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToDuckDB.create_tables"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToDuckDB.create_tables()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToPostgres"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToPostgres</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="jsonschema2ddl.html#jsonschema2ddl.JSONSchemaToRedshift"><code class="docutils literal notranslate"><span class="pre">JSONSchemaToRedshift</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

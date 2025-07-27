@@ -43,6 +43,8 @@ class Column:
         if "format" in self.jsonschema_fields and self.jsonschema_fields["format"] in COLUMNS_TYPES_PREFERENCE:
             self.jsonschema_type = self.jsonschema_fields["format"]
 
+        # DuckDB doesn't support auto-increment in column definition
+        # Sequences are handled separately in table creation
         return COLUMNS_TYPES[self.database_flavor][self.jsonschema_type].format(self.max_lenght)
 
     @property
@@ -182,6 +184,7 @@ class Table:
                 name="id",
                 database_flavor=self.database_flavor,
                 jsonschema_type="id",
+                jsonschema_fields={"pk": True},  # Mark auto-generated id as primary key
             )
             self.columns.append(col)
             self.primary_key = col
@@ -215,9 +218,12 @@ class FKColumn(Column):
             str: the column data type.
         """
         data_type_ref = self.table_ref.primary_key.data_type
-        if "varchar" in data_type_ref:
+        if "varchar" in data_type_ref.lower():
             return data_type_ref
         else:
+            # For DuckDB, FK should match the primary key data type exactly
+            if self.database_flavor == "duckdb":
+                return data_type_ref
             return FK_TYPES.get(data_type_ref, "bigint")
 
     @staticmethod

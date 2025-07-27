@@ -21,14 +21,32 @@ REDSHIFT_TYPES = {
     "id": "int identity(1, 1) not null",
 }
 
+DUCKDB_TYPES = {
+    "boolean": "BOOLEAN",
+    "number": "DOUBLE",
+    "string": "VARCHAR({})",
+    "enum": "VARCHAR",
+    "integer": "BIGINT",
+    "date-time": "TIMESTAMP",
+    "timestamp": "TIMESTAMP",
+    "timestampz": "TIMESTAMPTZ",
+    "date": "DATE",
+    "link": "INTEGER",
+    "array": "JSON",
+    "object": "JSON",
+    "id": "INTEGER",  # DuckDB sequences handle auto-increment separately
+}
+
 COLUMNS_TYPES = {
     "postgres": POSTGRES_TYPES,
     "redshift": REDSHIFT_TYPES,
+    "duckdb": DUCKDB_TYPES,
 }
 
 FK_TYPES = {
     "serial": "bigint",
     "int identity(1, 1) not null": "bigint",
+    "INTEGER": "INTEGER",  # DuckDB sequences use INTEGER
 }
 
 COLUMNS_TYPES_PREFERENCE = {
